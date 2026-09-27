@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Politique de confidentialité — Lucky GéoPlan</title>
+<meta name="robots" content="index, follow">
+<style>
+:root{--bg:#f4f6f5;--card:#fff;--text:#16241f;--muted:#5b6b64;--line:#dfe6e2;--accent:#1f7a4d}
+@media (prefers-color-scheme:dark){:root{--bg:#12161a;--card:#1a2025;--text:#e6eeea;--muted:#9fb0a8;--line:#2a3238;--accent:#4cbf86}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:16px/1.6 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;padding:24px 16px}
+main{max-width:720px;margin:0 auto;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:24px 22px}
+h1{font-size:1.6rem;margin:0 0 4px;color:var(--accent);text-wrap:balance}
+h2{font-size:1.1rem;margin:28px 0 8px}
+p,li{color:var(--text)} .muted{color:var(--muted);font-size:.92rem}
+ul{padding-left:1.2em} li{margin:4px 0}
+table{width:100%;border-collapse:collapse;font-size:.93rem;margin-top:8px}
+th,td{text-align:left;padding:8px 6px;border-bottom:1px solid var(--line);vertical-align:top}
+.tw{overflow-x:auto}
+a{color:var(--accent)}
+</style>
+</head>
+<body>
+<main>
+<h1>Politique de confidentialité — Lucky GéoPlan</h1>
+<p class="muted">Dernière mise à jour : 27 septembre 2026 (sauvegarde en ligne)</p>
+
+<p>Lucky GéoPlan (« l'application ») est éditée par <b>LUCKY TRANS SARLU</b>, Cocody Angré, Abidjan, Côte d'Ivoire. Cette page explique quelles données l'application utilise, pourquoi, et comment vous gardez le contrôle.</p>
+
+<h2>1. En résumé</h2>
+<ul>
+<li>Sans compte, rien ne quitte votre téléphone. Avec un compte, vos relevés, plans et favoris sont enregistrés sur le téléphone <b>et sauvegardés dans votre espace en ligne privé</b> (Google Firebase), pour les retrouver sur un autre appareil. Vous seul y avez accès.</li>
+<li>Votre position GPS sert au bornage, au piquetage, à la carte et au guidage. Elle n'est utilisée <b>que lorsque l'application est ouverte</b>.</li>
+<li>Pas de publicité, pas de mesure d'audience, aucune vente ni partage de données.</li>
+</ul>
+
+<h2>2. Données utilisées</h2>
+<div class="tw"><table>
+<tr><th>Donnée</th><th>Utilisation</th><th>Où elle va</th></tr>
+<tr><td>Position précise (GPS)</td><td>Afficher votre position, mesurer, borner, piqueter, calculer distances et itinéraires</td><td>Reste sur le téléphone. Envoyée à un service d'itinéraire ou de recherche seulement quand vous le demandez (voir section 3).</td></tr>
+<tr><td>Compte (nom, téléphone ou e-mail, mot de passe)</td><td>Vous identifier, retrouver vos données sur un autre téléphone</td><td>Sur le téléphone (mot de passe sous forme d'empreinte PBKDF2, jamais en clair) et chez Google Firebase Authentication (identifiant et mot de passe protégé par Google). Le numéro de téléphone sert seulement d'identifiant : aucun SMS n'est envoyé.</td></tr>
+<tr><td>Relevés, plans de maison, devis, favoris</td><td>Retrouver votre travail, le sauvegarder</td><td>Sur le téléphone, et dans votre espace privé Google Cloud Firestore si vous avez un compte. Ces éléments peuvent contenir des coordonnées GPS (bornes, favoris). Personne d'autre ne peut les lire : les règles de sécurité limitent l'accès au seul titulaire du compte.</td></tr>
+<tr><td>Carte hors ligne</td><td>Afficher la carte sans connexion</td><td>Images de carte stockées sur le téléphone. Vous pouvez les supprimer dans l'application.</td></tr>
+</table></div>
+
+<h2>3. Services extérieurs</h2>
+<p>Pour afficher la carte et calculer des trajets, l'application contacte ces services publics. Ils reçoivent, comme tout site web, l'adresse IP de votre connexion et la zone ou les points concernés :</p>
+<ul>
+<li><b>OpenStreetMap</b> (fonds de carte, recherche Nominatim) — OpenStreetMap Foundation, Royaume-Uni.</li>
+<li><b>Esri</b> (images satellite) — Esri, États-Unis.</li>
+<li><b>Photon / komoot</b> (recherche de lieux) — komoot GmbH, Allemagne.</li>
+<li><b>OSRM – FOSSGIS</b> (calcul d'itinéraires) — FOSSGIS e.V., Allemagne.</li>
+</ul>
+<p>Ces échanges sont chiffrés (https). L'application n'envoie jamais votre nom, votre compte ni vos plans à ces services.</p>
+<p><b>Google Firebase</b> (Authentication et Cloud Firestore) — Google LLC / Google Ireland Ltd — héberge votre compte et votre sauvegarde en ligne, pour le compte de LUCKY TRANS, en tant que sous-traitant. Voir la <a href="https://firebase.google.com/support/privacy" rel="noopener">politique de confidentialité de Firebase</a>.</p>
+
+<h2>4. Autorisations Android</h2>
+<ul>
+<li><b>Localisation</b> : uniquement pendant l'utilisation. Vous pouvez la refuser. Les modules de plan de maison et de devis fonctionnent sans elle.</li>
+<li><b>Internet</b> : carte, recherche, itinéraires et sauvegarde en ligne.</li>
+</ul>
+<p>L'application n'accède ni à vos contacts, ni à vos photos, ni à votre micro, et n'utilise pas la localisation en arrière-plan.</p>
+
+<h2>5. Conservation et suppression</h2>
+<p>Vos données sont conservées tant que votre compte existe. Pour tout effacer, sur le téléphone <b>et en ligne</b> : <b>Compte → Supprimer mon compte et mes données</b> dans l'application (une connexion Internet est nécessaire pour la partie en ligne). Vous pouvez aussi écrire à l'adresse ci-dessous : la suppression est faite sous 30 jours. Désinstaller l'application efface seulement les données du téléphone. La carte hors ligne se supprime depuis <b>Carte → ⬇ → Zones téléchargées → Supprimer la carte hors ligne</b>.</p>
+
+<h2>6. Enfants</h2>
+<p>L'application s'adresse aux professionnels et particuliers du bâtiment et du foncier. Elle n'est pas destinée aux enfants de moins de 13 ans.</p>
+
+<h2>7. Contact</h2>
+<p>Pour toute question : <b>yodaaboubacar@gmail.com</b> — LUCKY TRANS SARLU, Cocody Angré, Abidjan, Côte d'Ivoire.</p>
+</main>
+</body>
+</html>

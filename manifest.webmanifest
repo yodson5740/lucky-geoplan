@@ -1,0 +1,35 @@
+{
+  "name": "Lucky GéoPlan — mesurer, planifier, construire",
+  "short_name": "GéoPlan",
+  "description": "GPS de bornage et piquetage, carte et navigation, distances et temps de trajet, plans de maison et de logements chacun chez soi, fosse septique et devis.",
+  "lang": "fr",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#f4f6f5",
+  "theme_color": "#1f7a4d",
+  "categories": [
+    "utilities",
+    "productivity",
+    "navigation"
+  ],
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}

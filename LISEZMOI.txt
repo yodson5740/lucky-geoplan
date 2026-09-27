@@ -1,0 +1,9 @@
+LUCKY GÉOPLAN — DÉPÔT GITHUB
+============================
+Fichiers web (index.html, sw.js, manifest.webmanifest, icônes) : l'application en ligne (GitHub Pages).
+politique-confidentialite.html : page exigée par Google Play.
+LuckyGeoPlan-android.zip : projet Android (Capacitor 8, API 36). GitHub le décompresse et compile tout seul.
+.github/workflows/android.yml : le script de compilation (à créer via l'onglet Actions).
+
+Mettre à jour l'appli : remplacez index.html (et sw.js si besoin) → nouvelle version web + nouvel APK/AAB automatiquement.
+Numéro de version : automatique (1.0.1, 1.0.2…).
