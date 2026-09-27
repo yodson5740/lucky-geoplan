@@ -1,5 +1,5 @@
 /* Lucky GéoPlan — service worker : application hors ligne + carte hors ligne (tuiles en cache, agrandissement automatique) */
-const APP_CACHE='lucky-geoplan-app-v30', TILE_CACHE='bornix-tiles-v1', MAX_TILES=120000;
+const APP_CACHE='lucky-geoplan-app-v33', TILE_CACHE='bornix-tiles-v1', MAX_TILES=120000;
 const SHELL=['./','./index.html','./manifest.webmanifest','./icon-192.png','./icon-512.png',
   'https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css','https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js',
   'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js'];

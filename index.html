@@ -406,6 +406,35 @@ details.card>summary{cursor:pointer;font-weight:600;color:var(--muted);font-size
 #cmpSvg{width:100%;height:auto;display:block}
 .cmpHead{display:flex;justify-content:center;align-items:baseline;gap:10px}
 .cmpHead b{font-size:2.2rem;font-variant-numeric:tabular-nums;min-width:3.2ch;text-align:right} .cmpHead span{font-size:1.05rem;color:var(--muted);min-width:7ch;text-align:left}
+
+/* ---- v33 : partage, invitation d'installation, annonces, administration ---- */
+#installGate{position:fixed;inset:0;z-index:400;background:var(--bg);display:flex;align-items:center;justify-content:center;padding:20px 16px;overflow-y:auto}
+.gateCard{max-width:420px;width:100%;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:22px 18px;text-align:center;box-shadow:0 10px 30px rgba(0,0,0,.12)}
+.gateCard h2{margin:6px 0 4px;color:var(--accent);font-size:1.3rem;letter-spacing:0;text-transform:none}
+.gateCard .btn{display:block;text-decoration:none;text-align:center;box-sizing:border-box}
+.gateCard a.btn{background:var(--accent);color:#fff;padding:14px 16px;border-radius:12px;font-weight:700;margin:8px 0;font-size:1rem}
+.gateCard a.btn.secondary{background:var(--accent2,#0f5c8c)}
+.gateCard a.btn:focus-visible{outline:3px solid var(--text);outline-offset:2px}
+.gateLogo{font-size:3rem;line-height:1}
+.gatePt{background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:10px;display:flex;flex-direction:column;gap:4px}
+.gatePt span{font:700 1.25rem/1.3 ui-monospace,Consolas,monospace;color:var(--accent);word-break:break-all}
+.annBar{position:fixed;left:10px;right:10px;bottom:calc(92px + var(--safe-area-inset-bottom,env(safe-area-inset-bottom,0px)));z-index:280;display:flex;gap:10px;align-items:flex-start;padding:10px 12px;border-radius:12px;box-shadow:0 4px 16px rgba(0,0,0,.2);background:#0f5c8c;color:#fff;font-size:.9rem;max-width:620px;margin:0 auto}
+.annBar.alerte{background:#b5482a} .annBar.succes{background:#1f7a4d}
+.annBar span{flex:1} .annBar button{border:0;background:rgba(255,255,255,.2);color:#fff;border-radius:8px;width:30px;height:30px;cursor:pointer}
+.admWrap .trTools button.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.admBody{flex:1;overflow-y:auto;padding:14px 16px 24px;max-width:900px;width:100%;margin:0 auto;box-sizing:border-box}
+.admBody h3{font-size:.95rem;margin:16px 0 6px}
+.admKpis{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:8px}
+.admKpis div{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px}
+.admKpis b{display:block;font-size:1.5rem;color:var(--accent);font-variant-numeric:tabular-nums} .admKpis span{font-size:.8rem;color:var(--muted)}
+.admChart{width:100%;height:auto;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:6px;box-sizing:border-box}
+.admAxis{display:flex;justify-content:space-between;font-size:.72rem;color:var(--muted)}
+.admUser{display:flex;gap:10px;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--line)}
+.admUser>div{min-width:0} .admUser small{display:block;color:var(--muted);font-size:.78rem;word-break:break-word}
+.admUser .btn{flex:0 0 auto;width:auto;margin:0;padding:8px 12px}
+.admUser.off b{text-decoration:line-through;color:var(--muted)}
+.pill.on{background:#e3f4ea;color:#1f7a4d} .pill.off{background:#fde7e1;color:#b5482a}
+.admBody textarea{width:100%;box-sizing:border-box}
 </style>
 </head>
 <body>
@@ -572,12 +601,10 @@ details.card>summary{cursor:pointer;font-weight:600;color:var(--muted);font-size
     <div class="stat clickable" onclick="copyMyPos('dms')"><span>DMS</span><b id="myDms">—</b></div>
     <div class="stat clickable" onclick="copyMyPos('utm')"><span>UTM (WGS84)</span><b id="myUtm">—</b></div>
     <div class="stat"><span>Altitude</span><b id="myAlt">—</b></div>
-    <div class="muted">Touchez une ligne pour la copier. Touchez la carte pour choisir une destination.</div>
+    <div class="muted">Touchez une ligne pour la copier. « Partager » envoie vos coordonnées par l'application de votre choix, avec un lien qui s'ouvre dans Lucky GéoPlan.</div>
     <div class="actGrid">
       <button onclick="copyMyPos('all')">📋<span>Copier</span></button>
       <button onclick="shareMyPos()">📤<span>Partager</span></button>
-      <button onclick="shareMyPosVia('whatsapp')">💬<span>WhatsApp</span></button>
-      <button onclick="shareMyPosVia('sms')">✉️<span>SMS</span></button>
       <button onclick="openFavModal('me')">⭐<span>Favori</span></button>
       <button onclick="recenterMe()">🎯<span>Centrer</span></button>
     </div>
@@ -623,14 +650,6 @@ details.card>summary{cursor:pointer;font-weight:600;color:var(--muted);font-size
     </select>
     <div class="muted" id="bornesShapeHint">Captez vos bornes une par une, dans l'ordre du contour.</div>
     <div id="bornesStats"></div>
-    <label>Précision de capture</label>
-    <select id="bornesAvg">
-      <option value="0">Instantanée (rapide)</option>
-      <option value="10">Moyenne sur 10 secondes</option>
-      <option value="30" selected>Moyenne sur 30 secondes (recommandé)</option>
-      <option value="60">Moyenne sur 60 secondes (bornage précis)</option>
-    </select>
-    <div id="avgWrap" style="display:none"><div class="avgBar"><i id="avgFill" style="width:0"></i></div><div class="muted" id="avgTxt"></div></div>
     <button class="btn capBtn" id="bornesCapBtn" onclick="addBornesPoint()">📡 Capter la borne 1 (A)</button>
     <div id="bornesList"></div>
     <div class="row">
@@ -978,11 +997,15 @@ details.card>summary{cursor:pointer;font-weight:600;color:var(--muted);font-size
       <option value="km2">Kilomètres carrés (km²)</option>
     </select>
     <p class="muted">S'applique immédiatement aux mesures affichées et aux prochains relevés.</p>
-    <label class="chk"><input type="checkbox" id="optShareLink" onchange="try{localStorage.setItem('bornix_sharelink_v1',this.checked?'1':'0')}catch(e){}"> Ajouter un lien de carte dans les messages partagés (pour le destinataire)</label>
     <button class="btn" onclick="closeSettings()">Terminé</button>
   </div>
 </div>
 <div id="toast" role="status" aria-live="polite"></div>
+<div id="adminModal" class="traceWrap admWrap" style="display:none" role="dialog" aria-modal="true" aria-label="Administration">
+  <div class="trHead"><button class="lockBtn" onclick="closeAdmin()" title="Fermer">✕</button><b>🛡 Administration générale</b></div>
+  <div class="trTools" id="admTabs"><button type="button" data-t="dash" onclick="admTab('dash')">📊 Tableau de bord</button><button type="button" data-t="users" onclick="admTab('users')">👥 Utilisateurs</button><button type="button" data-t="ann" onclick="admTab('ann')">📢 Annonce</button><button type="button" data-t="app" onclick="admTab('app')">⚙️ Application</button></div>
+  <div class="admBody" id="admBody"></div>
+</div>
 <div id="traceModal" class="traceWrap" style="display:none" role="dialog" aria-modal="true" aria-label="Je trace mon plan">
   <div class="trHead"><button class="lockBtn" onclick="closeTrace()" title="Fermer">✕</button><b>✏️ Je trace mon plan</b><button class="trIco" onclick="traceUndo()" title="Annuler la dernière action">↶</button><button class="btn trUse" onclick="traceUse()">✅ Utiliser ce plan</button></div>
   <div class="trTools" id="trTools"></div>
@@ -1131,6 +1154,7 @@ function renderAuth(tab){
       <div class="stat"><span>Favoris</span><b>${nF}</b></div>
       <div class="stat"><span>☁️ Sauvegarde en ligne</span><b id="cloudStat" style="text-align:right">${cloudStatusHTML()}</b></div>
       <button class="btn ghost" onclick="cloudNow()">🔄 Synchroniser maintenant</button>
+      <div id="adminSlot"></div>
       <div class="row"><button class="btn ghost" onclick="exportAll()">⬇ Sauvegarder</button><button class="btn ghost" onclick="document.getElementById('restoreFile').click()">⬆ Restaurer</button></div>
       <input type="file" id="restoreFile" accept=".json,application/json" style="display:none" onchange="importAll(this)">
       <details style="margin-top:10px"><summary class="muted">🔑 Changer le mot de passe</summary>
@@ -1141,6 +1165,7 @@ function renderAuth(tab){
       <button class="btn danger" onclick="deleteAccount()">Supprimer mon compte et mes données</button>
       <button class="btn ghost" onclick="closeAuth()">Fermer</button>
       <div id="authMsg" class="authMsg"></div>`;
+    if(typeof refreshAdminSlot==='function') setTimeout(refreshAdminSlot,0);
     return;
   }
   const reg=tab==='register';
@@ -1736,7 +1761,25 @@ function useCurrentAsTarget(){
 }
 /* Boussole : capteur lu à chaque mouvement, lissage circulaire + animation à la fréquence de l'écran */
 const COMPASS={raw:null,sm:null,sx:1,sy:0,abs:false,raf:0,last:0,on:false,rose:false};
+// Cap du haut du téléphone (à plat) ou de l'arrière (téléphone debout), quelle que soit l'inclinaison
+function headingFromEuler(a,b,g){
+  const d=Math.PI/180, cA=Math.cos(a*d), sA=Math.sin(a*d), cB=Math.cos(b*d), sB=Math.sin(b*d), cG=Math.cos(g*d), sG=Math.sin(g*d);
+  const yE=-sA*cB, yN=cA*cB;
+  const h= Math.hypot(yE,yN)>=0.5 ? Math.atan2(yE,yN) : Math.atan2(-cA*sG-sA*sB*cG, -sA*sG+cA*sB*cG);
+  return (h/d+360)%360;
+}
+function compassNativeFeed(d){ COMPASS.raw=((+d.heading%360)+360)%360; COMPASS.abs=(d.accuracy==null||d.accuracy>=2); COMPASS.last=performance.now(); compassSeen=true; if(!COMPASS.raf) COMPASS.raf=requestAnimationFrame(compassFrame); }
 function compassStart(){
+  if(COMPASS.on) return;
+  if(IS_NATIVE && Capacitor.Plugins && Capacitor.Plugins.Compass){ // capteur natif Android (vecteur de rotation), le plus précis
+    COMPASS.on=true;
+    Capacitor.Plugins.Compass.addListener('heading',compassNativeFeed);
+    Capacitor.Plugins.Compass.start().then(r=>{ if(r&&r.available){ COMPASS.native=true; } else { COMPASS.on=false; COMPASS.native=false; compassStartWeb(); } }).catch(()=>{ COMPASS.on=false; compassStartWeb(); });
+    return;
+  }
+  compassStartWeb();
+}
+function compassStartWeb(){
   if(COMPASS.on) return;
   if(typeof DeviceOrientationEvent!=='undefined' && typeof DeviceOrientationEvent.requestPermission==='function'){ const b=document.getElementById('calBtn'); if(b) b.style.display='block'; return; }
   COMPASS.on=true;
@@ -1754,11 +1797,12 @@ function requestCompassPermission(){
 }
 function onOrientation(e){
   let h=null;
+  if(COMPASS.native) return;
   if(e.webkitCompassHeading!=null){ h=e.webkitCompassHeading; COMPASS.abs=true; }
   else if(e.alpha!=null){
     if(e.type==='deviceorientationabsolute') onOrientation._abs=true; else if(onOrientation._abs) return;
     COMPASS.abs=e.type==='deviceorientationabsolute'||e.absolute===true;
-    h=360-e.alpha;
+    h=headingFromEuler(e.alpha,e.beta||0,e.gamma||0);   // corrige l'inclinaison du téléphone
     const so=(screen.orientation&&screen.orientation.angle)||window.orientation||0; h+=so;
   } else return;
   COMPASS.raw=((h%360)+360)%360; COMPASS.last=performance.now(); compassSeen=true;
@@ -1768,7 +1812,7 @@ function compassFrame(){
   COMPASS.raf=0; if(COMPASS.raw==null) return;
   const r=COMPASS.raw*Math.PI/180, cx=Math.cos(r), cy=Math.sin(r);
   if(COMPASS.sm==null){ COMPASS.sx=cx; COMPASS.sy=cy; }
-  else { const k=0.3; COMPASS.sx+=(cx-COMPASS.sx)*k; COMPASS.sy+=(cy-COMPASS.sy)*k; }   // lissage sans saut entre 359° et 0°
+  else { const k=0.45; COMPASS.sx+=(cx-COMPASS.sx)*k; COMPASS.sy+=(cy-COMPASS.sy)*k; }   // lissage sans saut entre 359° et 0°
   const sm=(Math.atan2(COMPASS.sy,COMPASS.sx)*180/Math.PI+360)%360;
   COMPASS.sm=sm; currentHeading=sm;
   renderCompass(); if(typeof updateMeArrow==='function') updateMeArrow();
@@ -1797,7 +1841,7 @@ function renderCompass(){
   const nd=document.getElementById('needle');
   if(guideBrg!=null){ nd.style.display=''; nd.setAttribute('transform',`rotate(${((guideBrg-h+360)%360).toFixed(1)} 120 120)`); } else nd.style.display='none';
   const hint=document.getElementById('cmpHint');
-  if(hint && COMPASS.raw!=null) hint.textContent=COMPASS.abs?'Nord magnétique · tenez le téléphone à plat, loin du métal.':'⚠️ Capteur non calibré : faites un 8 dans l\'air avec le téléphone.';
+  if(hint && COMPASS.raw!=null) hint.textContent=COMPASS.abs?'Le N rouge indique le Nord (magnétique). Fonctionne à plat ou téléphone debout. Éloignez-vous du métal.':'⚠️ Boussole à calibrer : faites un 8 dans l\'air avec le téléphone.';
 }
 function startGuidance(){
   const lat=parseFloat(document.getElementById('tLat').value), lng=parseFloat(document.getElementById('tLng').value);
@@ -1862,7 +1906,7 @@ function renderBornesUI(){
     h+=`<div class="stat"><span>Périmètre</span><b id="bornesPerim">${fmt(perimeter,'m')}</b></div><div class="stat"><span>Surface</span><b id="bornesArea">${fmtArea(area)}</b></div>`; }
   document.getElementById('bornesStats').innerHTML=h;
   const btn=document.getElementById('bornesCapBtn');
-  if(btn && avgWatch===null) btn.textContent= n===0?'📡 Capter la borne 1 (A)':`➕ Ajouter la borne ${n+1} (${bornLetter(n)})`;
+  if(btn && !bornesBusy) btn.textContent= n===0?'📡 Capter la borne 1 (A)':`➕ Ajouter la borne ${n+1} (${bornLetter(n)})`;
   document.getElementById('bornesList').innerHTML=P.map((p,i)=>{ const q=P[i-1];
     return `<div class="bornRow"><span class="bornTag">${bornLetter(i)}</span><div class="bornTxt"><b>${escHtml(p.label)}</b><small>${p.lat.toFixed(6)}, ${p.lng.toFixed(6)} · ± ${(p.acc||0).toFixed(1)} m${q?` · ${fmt(haversine(q.lat,q.lng,p.lat,p.lng),'m')} depuis ${bornLetter(i-1)}`:''}</small></div><button type="button" onclick="delBorne(${i})" aria-label="Supprimer ${escHtml(p.label)}">🗑</button></div>`; }).join('');
   const done=document.getElementById('bornesDoneBtn'), need=shape==='triangle'?3:shape==='rectangle'?4:2;
@@ -1873,38 +1917,28 @@ function renderBornesUI(){
 function delBorne(i){ bornesPoints.splice(i,1); bornesPoints.forEach((p,k)=>{ if(/^(Borne|Point) \d+$/.test(p.label)) p.label='Borne '+(k+1); }); document.getElementById('bornesStatus').textContent='Borne supprimée.'; renderBornesUI(); }
 // Capture moyennée : plusieurs mesures GPS pondérées par leur précision → borne plus fiable
 let avgWatch=null, avgTimer=null;
+let bornesBusy=false;
+function buzz(ms){ try{ if(IS_NATIVE&&Capacitor.Plugins.Haptics){ Capacitor.Plugins.Haptics.vibrate({duration:ms||220}); return; } }catch(e){} try{ navigator.vibrate&&navigator.vibrate(ms?ms:[120,60,120]); }catch(e){} }
+// Capture de borne : la meilleure position GPS obtenue en 2 à 4 secondes (immédiate si le GPS est déjà précis)
 function addBornesPoint(){
-  const secs=parseInt(document.getElementById('bornesAvg').value)||0;
-  if(!secs) return addBornesPointInstant();
-  const btn=document.getElementById('bornesCapBtn'), wrap=document.getElementById('avgWrap'), fill=document.getElementById('avgFill'), txt=document.getElementById('avgTxt');
-  if(avgWatch!==null){ stopAvg(true); return; }
-  const samples=[], t0=Date.now();
-  wrap.style.display='block'; btn.textContent='⏹ Arrêter et garder la moyenne';
-  const finish=()=>{
-    stopAvg(false);
-    if(!samples.length){ document.getElementById('bornesStatus').textContent='Aucune mesure GPS reçue — réessayez à découvert.'; return; }
-    // on écarte les mesures les moins précises (au-delà de 2 × la médiane)
-    const accs=samples.map(q=>q.acc).sort((a,b)=>a-b), med=accs[Math.floor(accs.length/2)];
-    const good=samples.filter(q=>q.acc<=med*2);
-    let sw=0, la=0, lo=0; good.forEach(q=>{ const w=1/(q.acc*q.acc); sw+=w; la+=q.lat*w; lo+=q.lng*w; });
-    const lat=la/sw, lng=lo/sw;
-    const spread=Math.sqrt(good.reduce((a,q)=>a+haversine(lat,lng,q.lat,q.lng)**2,0)/good.length);
-    const prec=Math.max(Math.sqrt(1/sw)*1.0, spread/Math.sqrt(good.length), 0.3);
-    bornesPoints.push({label:'Borne '+(bornesPoints.length+1),lat,lng,acc:prec,samples:good.length});
-    document.getElementById('bornesStatus').textContent=`✅ Borne ${bornesPoints.length} (${bornLetter(bornesPoints.length-1)}) captée : moyenne de ${good.length} mesures, précision estimée ± ${prec.toFixed(1)} m (instantané : ± ${med.toFixed(1)} m).`;
-    if(navigator.vibrate) navigator.vibrate(120);
-    renderBornesUI();
-  };
-  window._avgFinish=finish;
-  avgWatch=navigator.geolocation.watchPosition(pos=>{
-    samples.push({lat:pos.coords.latitude,lng:pos.coords.longitude,acc:Math.max(0.5,pos.coords.accuracy)});
-  },err=>{ txt.textContent='Erreur GPS : '+err.message; },{enableHighAccuracy:true,maximumAge:0,timeout:secs*1000+10000});
-  avgTimer=setInterval(()=>{
-    const el=(Date.now()-t0)/1000, last=samples[samples.length-1];
-    fill.style.width=Math.min(100,el/secs*100)+'%';
-    txt.textContent=`⏳ ${Math.floor(el)}/${secs} s · ${samples.length} mesure(s)${last?` · dernière ± ${last.acc.toFixed(1)} m`:''} — restez immobile sur la borne`;
-    if(el>=secs) finish();
-  },500);
+  if(bornesBusy) return;
+  const st=document.getElementById('bornesStatus'), btn=document.getElementById('bornesCapBtn'), k=bornesPoints.length;
+  const done=b=>{ bornesBusy=false; if(!b){ st.textContent='⚠️ Position GPS introuvable — sortez à découvert et réessayez.'; renderBornesUI(); return; }
+    bornesPoints.push({label:'Borne '+(k+1),lat:b.lat,lng:b.lng,acc:b.acc});
+    buzz(); st.textContent=`✅ Borne ${k+1} (${bornLetter(k)}) captée · ${coordStr(b.lat,b.lng)} · ± ${(+b.acc).toFixed(1)} m`;
+    renderBornesUI(); };
+  const fresh=mePos&&mePos.time&&Date.now()-mePos.time<2000?{lat:mePos.lat,lng:mePos.lng,acc:mePos.acc}:null;
+  if(fresh&&fresh.acc<=6) return done(fresh);
+  bornesBusy=true; btn.textContent='📡 Capture de la borne…'; st.textContent='Restez immobile quelques secondes sur la borne…';
+  let best=fresh, finished=false; const t0=Date.now();
+  const finish=()=>{ if(finished) return; finished=true; navigator.geolocation.clearWatch(w); clearTimeout(tm); done(best); };
+  const w=navigator.geolocation.watchPosition(pos=>{ const c=pos.coords, q={lat:c.latitude,lng:c.longitude,acc:c.accuracy};
+      if(!best||q.acc<best.acc) best=q;
+      if(best.acc<=4||(Date.now()-t0>2500&&best.acc<=15)) finish(); },
+    err=>{ if(!best){ finished=true; navigator.geolocation.clearWatch(w); clearTimeout(tm); bornesBusy=false; st.textContent='Erreur GPS : '+err.message; renderBornesUI(); } },
+    {enableHighAccuracy:true,maximumAge:0,timeout:20000});
+  setTimeout(()=>{ if(best&&best.acc<=15) finish(); },2500);
+  const tm=setTimeout(()=>{ if(best) finish(); else setTimeout(()=>{ if(!finished) finish(); },12000); },4000);
 }
 function stopAvg(keep){
   if(avgWatch!==null){ navigator.geolocation.clearWatch(avgWatch); avgWatch=null; }
@@ -2552,7 +2586,7 @@ function updateMeArrow(){
 function renderMyPos(){
   if(!mePos) return;
   const {lat,lng,acc,alt}=mePos;
-  document.getElementById('myDec').textContent=`${lat.toFixed(6)}, ${lng.toFixed(6)}`;
+  document.getElementById('myDec').textContent=`${lat.toFixed(6)},${lng.toFixed(6)}`;
   document.getElementById('myDms').textContent=`${toDMS(lat,'lat')} ${toDMS(lng,'lng')}`;
   document.getElementById('myUtm').textContent=toUTM(lat,lng).text;
   document.getElementById('myAlt').textContent=alt!=null?`${alt.toFixed(1)} m`:'non fournie';
@@ -2562,22 +2596,20 @@ function renderMyPos(){
 }
 function myPosText(p){
   p=p||mePos;
-  return `📍 Ma position (${APP_NAME})\nLatitude : ${p.lat.toFixed(6)}\nLongitude : ${p.lng.toFixed(6)}\nDMS : ${toDMS(p.lat,'lat')} ${toDMS(p.lng,'lng')}\nUTM : ${toUTM(p.lat,p.lng).text}${p.acc?`\nPrécision : ± ${p.acc.toFixed(1)} m`:''}${shareLink(p.lat,p.lng)}`;
+  return pointShareText(p.lat,p.lng,'Ma position',`${p.acc?'précision ± '+p.acc.toFixed(1)+' m · ':''}${new Date().toLocaleString('fr-FR',{dateStyle:'short',timeStyle:'short'})}`);
 }
 function needPos(){ if(!mePos){ toast('Position GPS pas encore disponible…'); startMapWatch(); return false; } return true; }
 function copyMyPos(kind){
   if(!needPos()) return;
   const {lat,lng}=mePos;
-  const txt = kind==='dec' ? `${lat.toFixed(6)}, ${lng.toFixed(6)}`
+  const txt = kind==='dec' ? coordStr(lat,lng)
     : kind==='dms' ? `${toDMS(lat,'lat')} ${toDMS(lng,'lng')}`
     : kind==='utm' ? toUTM(lat,lng).text : myPosText();
   copyText(txt, kind==='all'?'Position complète copiée ✅':'Copié : '+txt);
 }
 function shareMyPos(){
   if(!needPos()) return;
-  const text=myPosText();
-  if(navigator.share) navigator.share({title:'Ma position',text}).catch(()=>{});
-  else copyText(text,'Position copiée — collez-la dans l\'application de votre choix');
+  sharePoint(mePos.lat,mePos.lng,'Ma position',`${mePos.acc?'précision ± '+mePos.acc.toFixed(1)+' m · ':''}${new Date().toLocaleString('fr-FR',{dateStyle:'short',timeStyle:'short'})}`);
 }
 function shareMyPosVia(app){
   if(!needPos()) return;
@@ -2654,9 +2686,7 @@ function updateNav(){
 }
 function shareDestination(){
   if(!dest) return;
-  const text=`📍 ${dest.name}\n${dest.lat.toFixed(6)}, ${dest.lng.toFixed(6)}\nDMS : ${toDMS(dest.lat,'lat')} ${toDMS(dest.lng,'lng')}${shareLink(dest.lat,dest.lng)}`;
-  if(navigator.share) navigator.share({title:dest.name,text}).catch(()=>{});
-  else copyText(text,'Point copié ✅');
+  sharePoint(dest.lat,dest.lng,dest.name,'');
 }
 
 /* ---- Recherche : coordonnées (décimal, DMS, lien Google Maps) ou nom de lieu ---- */
@@ -3085,8 +3115,7 @@ function goFav(id){ const f=loadFavs().find(x=>x.id===id); if(!f) return; setDes
 function viewFav(id){ const f=loadFavs().find(x=>x.id===id); if(!f) return; selectPlace(f.lat,f.lng,f.name,'⭐ '+(FAV_CATS[f.cat]||FAV_CATS.autre)[1]+(f.note?' · '+f.note:'')); window.scrollTo({top:0,behavior:'smooth'}); }
 function shareFav(id){
   const f=loadFavs().find(x=>x.id===id); if(!f) return;
-  const text=`${(FAV_CATS[f.cat]||FAV_CATS.autre)[0]} ${f.name}${f.note?'\n'+f.note:''}\n${f.lat.toFixed(6)}, ${f.lng.toFixed(6)}\nDMS : ${toDMS(f.lat,'lat')} ${toDMS(f.lng,'lng')}${shareLink(f.lat,f.lng)}`;
-  if(navigator.share) navigator.share({title:f.name,text}).catch(()=>{}); else copyText(text,'Favori copié ✅');
+  sharePoint(f.lat,f.lng,`${(FAV_CATS[f.cat]||FAV_CATS.autre)[0]} ${f.name}`,f.note||'');
 }
 function renderFavs(){
   const el=document.getElementById('favList'); if(!el) return;
@@ -3315,9 +3344,7 @@ function clearPlace(){ placeSel=null; if(placeMarker&&map){ map.removeLayer(plac
 function placeItinerary(){ if(!placeSel) return; const P=placeSel; setDestination(P.lat,P.lng,P.name+(P.sub?' — '+P.sub:'')); toast('🧭 Itinéraire vers '+P.name); }
 function placeDetails(){ const c=document.getElementById('placeCard'); if(c) c.scrollIntoView({behavior:'smooth',block:'start'}); }
 function placeFav(){ if(!placeSel) return; openFavModal('pt',placeSel.lat,placeSel.lng,/^Point sur la carte|^Coordonnées saisies/.test(placeSel.name)?'':placeSel.name); }
-function placeShare(){ if(!placeSel) return; const P=placeSel;
-  const t=`📌 ${P.name}${P.sub?'\n'+P.sub:''}\n${P.lat.toFixed(6)}, ${P.lng.toFixed(6)}\nDMS : ${toDMS(P.lat,'lat')} ${toDMS(P.lng,'lng')}${shareLink(P.lat,P.lng)}`;
-  if(navigator.share) navigator.share({title:P.name,text:t}).catch(()=>{}); else copyText(t,'Lieu copié ✅'); }
+function placeShare(){ if(!placeSel) return; const P=placeSel; sharePoint(P.lat,P.lng,P.name,(P.sub||'').replace(/^-?\d+\.\d+,-?\d+\.\d+ · /,'')); }
 function placeTrip(){ if(!placeSel) return; setTripPair('me','place'); }
 
 /* ---- Retour à la position GPS exacte (plusieurs mesures fraîches, on garde la plus précise) ---- */
@@ -4948,7 +4975,6 @@ if(!IS_NATIVE && 'serviceWorker' in navigator && /^https?:$/.test(location.proto
 onAuthChange();
 renderHistory();
 renderTrip(); renderFavs(); renderNavModes(); checkGaps();
-try{ document.getElementById('optShareLink').checked=localStorage.getItem('bornix_sharelink_v1')!=='0'; }catch(e){}
 
 /* =====================================================================
    ✏️ JE TRACE MON PLAN — éditeur de plan au doigt
@@ -5316,6 +5342,199 @@ window.addEventListener('pagehide',saveLastPos);
 setTimeout(()=>{ saveLastPos(); autoPreload(); },6000);
 
 /* =====================================================================
+   PARTAGE DE POINTS : « lat,lon » + description + lien qui ouvre
+   Lucky GéoPlan (application Android, ou invitation à l'installer)
+   ===================================================================== */
+var SHARE_BASE='https://luckygeo-pro.web.app/p';
+var APP_PKG='ci.luckytrans.geoplan';
+var APP_CFG={playUrl:'',apkUrl:'https://github.com/yodson5740/lucky-geoplan/releases',minBuild:0,maintenance:'',maintenanceOn:false};
+const coordStr=(lat,lng)=>`${(+lat).toFixed(6)},${(+lng).toFixed(6)}`;
+function pointLink(lat,lng,name){ return `${SHARE_BASE}?c=${coordStr(lat,lng)}${name?'&n='+encodeURIComponent(String(name).slice(0,60)):''}`; }
+function pointShareText(lat,lng,title,desc){
+  const lines=[coordStr(lat,lng)];
+  const d=[title,desc].filter(Boolean).join(' — '); if(d) lines.push(d);
+  lines.push(`📲 Ouvrir dans ${APP_NAME} : ${pointLink(lat,lng,title)}`);
+  return lines.join('\n');
+}
+function sharePoint(lat,lng,title,desc){
+  const text=pointShareText(lat,lng,title,desc);
+  if(navigator.share) navigator.share({title:title||APP_NAME,text}).catch(()=>{});
+  else copyText(text,'Point copié ✅ — collez-le dans l\'application de votre choix');
+}
+function installUrl(){ return APP_CFG.playUrl||APP_CFG.apkUrl||`https://play.google.com/store/apps/details?id=${APP_PKG}`; }
+function parsePointUrl(u){
+  try{ const url=new URL(u,location.href), c=url.searchParams.get('c'); if(!c) return null;
+    const [la,lo]=c.split(/[,;]/).map(Number);
+    if(!isFinite(la)||!isFinite(lo)||Math.abs(la)>90||Math.abs(lo)>180) return null;
+    return {lat:la,lng:lo,name:(url.searchParams.get('n')||'Point partagé').slice(0,60)};
+  }catch(e){ return null; }
+}
+function openSharedPoint(P){
+  showTab('map');
+  const go=()=>{ selectPlace(P.lat,P.lng,P.name,`${coordStr(P.lat,P.lng)} · reçu par partage`); if(map) map.setView([P.lat,P.lng],17,{animate:false}); followMe=false; if(typeof updateFollowBtn==='function') updateFollowBtn(); };
+  if(map) go(); else setTimeout(go,700);
+  toast('📍 Point partagé ouvert dans '+APP_NAME);
+}
+// Lien ouvert dans un navigateur : l'installation de l'application est obligatoire
+let deferredInstall=null;
+window.addEventListener('beforeinstallprompt',e=>{ e.preventDefault(); deferredInstall=e; const b=document.getElementById('gatePwa'); if(b) b.style.display='block'; });
+function showInstallGate(P){
+  const ua=navigator.userAgent, android=/Android/i.test(ua), ios=/iPhone|iPad|iPod/i.test(ua);
+  const intent=`intent://luckygeo-pro.web.app/p?c=${coordStr(P.lat,P.lng)}&n=${encodeURIComponent(P.name)}#Intent;scheme=https;package=${APP_PKG};S.browser_fallback_url=${encodeURIComponent(installUrl())};end`;
+  const g=document.createElement('div'); g.id='installGate'; g.setAttribute('role','dialog'); g.setAttribute('aria-modal','true');
+  g.innerHTML=`<div class="gateCard">
+    <div class="gateLogo">📍</div><h2>${escHtml(APP_NAME)}</h2>
+    <p class="muted" style="margin:0 0 10px">Un point vous a été partagé :</p>
+    <div class="gatePt"><b>${escHtml(P.name)}</b><span id="gateCoord">${coordStr(P.lat,P.lng)}</span><button type="button" class="btn ghost" onclick="copyText('${coordStr(P.lat,P.lng)}','Coordonnées copiées ✅')">📋 Copier les coordonnées</button></div>
+    <p style="margin:12px 0 8px"><b>Pour ouvrir ce point sur la carte et vous y rendre, installez l'application ${escHtml(APP_NAME)}.</b></p>
+    ${android?`<a class="btn" href="${intent}">📲 Ouvrir dans l'application</a><p class="muted" style="margin:4px 0 8px">Si elle n'est pas installée, vous serez dirigé vers l'installation.</p>`:''}
+    <a class="btn ${android?'secondary':''}" id="gateInstall" href="${installUrl()}" target="_blank" rel="noopener">⬇ Installer ${escHtml(APP_NAME)}</a>
+    <button type="button" class="btn ghost" id="gatePwa" style="display:${deferredInstall?'block':'none'}" onclick="gatePwa()">💻 Installer sur cet appareil</button>
+    ${ios?`<p class="muted" style="margin-top:8px">Sur iPhone : touchez <b>Partager</b> puis <b>Sur l'écran d'accueil</b> pour installer ${escHtml(APP_NAME)}.</p>`:''}
+  </div>`;
+  document.body.appendChild(g); document.body.style.overflow='hidden';
+  loadAppConfig().then(()=>{ const a=document.getElementById('gateInstall'); if(a) a.href=installUrl(); });
+}
+function gatePwa(){ if(!deferredInstall) return; deferredInstall.prompt(); deferredInstall.userChoice.then(()=>{ deferredInstall=null; }); }
+function handleLaunchLink(){
+  const P=parsePointUrl(location.href); if(!P) return;
+  const standalone=(window.matchMedia&&matchMedia('(display-mode: standalone)').matches)||navigator.standalone;
+  if(IS_NATIVE||standalone){ try{ history.replaceState(null,'',location.pathname.replace(/\/p$/,'/')); }catch(e){} setTimeout(()=>openSharedPoint(P),900); }
+  else showInstallGate(P);
+}
+/* ---- Réglages publics de l'application (liens d'installation, annonce, version minimale) ---- */
+let cfgP=null;
+function loadAppConfig(){
+  if(cfgP) return cfgP;
+  cfgP=(async()=>{ if(!navigator.onLine) return;
+    try{ const {db}=await fbLoad();
+      const a=await db.collection('config').doc('app').get(); if(a.exists) Object.assign(APP_CFG,a.data());
+      const n=await db.collection('config').doc('announce').get(); if(n.exists) showAnnounce(n.data());
+      checkAppRules();
+    }catch(e){ console.warn('config',e); cfgP=null; } })();
+  return cfgP;
+}
+function showAnnounce(A){
+  if(!A||!A.active||!A.text) return; let seen=''; try{ seen=localStorage.getItem('bornix_announce_seen')||''; }catch(e){}
+  if(String(A.id)===seen) return;
+  const b=document.createElement('div'); b.className='annBar '+(A.level||'info');
+  b.innerHTML=`<span>${A.level==='alerte'?'⚠️':A.level==='succes'?'🎉':'📢'} ${escHtml(A.text)}</span><button type="button" aria-label="Fermer">✕</button>`;
+  b.querySelector('button').onclick=()=>{ b.remove(); try{ localStorage.setItem('bornix_announce_seen',String(A.id)); }catch(e){} };
+  document.body.appendChild(b);
+}
+async function checkAppRules(){
+  if(APP_CFG.maintenanceOn&&APP_CFG.maintenance) showAnnounce({active:true,text:APP_CFG.maintenance,level:'alerte',id:'maint-'+APP_CFG.maintenance.length});
+  if(!IS_NATIVE||!APP_CFG.minBuild) return;
+  try{ const info=await Capacitor.Plugins.App.getInfo(); if(+info.build<+APP_CFG.minBuild){
+    const g=document.createElement('div'); g.id='installGate';
+    g.innerHTML=`<div class="gateCard"><div class="gateLogo">⬆️</div><h2>Mise à jour obligatoire</h2><p>Une nouvelle version de ${escHtml(APP_NAME)} est disponible. Installez-la pour continuer.</p><a class="btn" href="${installUrl()}">⬇ Mettre à jour</a></div>`;
+    document.body.appendChild(g); } }catch(e){}
+}
+setTimeout(()=>{ handleLaunchLink(); },300);
+setTimeout(()=>{ loadAppConfig(); },4000);
+
+/* =====================================================================
+   🛡 ADMINISTRATION GÉNÉRALE (réservée aux adresses e-mail vérifiées ci-dessous)
+   ===================================================================== */
+var ADMIN_EMAILS=['yodaaboubacar@gmail.com'];
+let ADM={users:[],tab:'dash',q:''};
+async function adminUser(){ try{ const {auth}=await fbLoad(); const u=auth.currentUser; return u&&u.email&&ADMIN_EMAILS.includes(u.email.toLowerCase())?u:null; }catch(e){ return null; } }
+async function refreshAdminSlot(){
+  const el=document.getElementById('adminSlot'); if(!el) return;
+  const u=await adminUser(); if(!u){ el.innerHTML=''; return; }
+  el.innerHTML=u.emailVerified?`<button class="btn" onclick="openAdmin()">🛡 Administration générale</button>`
+    :`<div class="infoBox">🛡 Compte administrateur : vérifiez votre adresse e-mail pour ouvrir l'administration.</div><div class="row"><button class="btn secondary" onclick="adminVerify()">📧 Envoyer l'e-mail de vérification</button><button class="btn ghost" onclick="adminRecheck()">✅ J'ai vérifié</button></div>`;
+}
+async function adminVerify(){ const u=await adminUser(); if(!u) return; try{ await u.sendEmailVerification(); toast('📧 E-mail envoyé à '+u.email+' — ouvrez le lien puis touchez « J\'ai vérifié »'); }catch(e){ toast('Envoi impossible : '+fbErr(e)); } }
+async function adminRecheck(){ const u=await adminUser(); if(!u) return; try{ await u.reload(); await u.getIdToken(true); }catch(e){} refreshAdminSlot(); toast(u.emailVerified?'✅ Adresse vérifiée : administration activée':'Adresse pas encore vérifiée — ouvrez le lien reçu par e-mail'); }
+async function openAdmin(){
+  const u=await adminUser(); if(!u||!u.emailVerified){ toast('Accès réservé à l\'administrateur'); return; }
+  closeAuth(); $v('adminModal').style.display='flex'; document.body.style.overflow='hidden';
+  admTab(ADM.tab); await admLoad();
+}
+function closeAdmin(){ $v('adminModal').style.display='none'; document.body.style.overflow=''; }
+async function admLoad(){
+  $v('admBody').innerHTML='<p class="muted">⏳ Chargement…</p>';
+  try{ const {db}=await fbLoad(); const s=await db.collection('users').get();
+    ADM.users=s.docs.map(d=>({uid:d.id,...d.data()}));
+    const [a,n]=await Promise.all([db.collection('config').doc('app').get(),db.collection('config').doc('announce').get()]);
+    ADM.app=a.exists?a.data():{}; ADM.ann=n.exists?n.data():{};
+    admRender();
+  }catch(e){ $v('admBody').innerHTML=`<div class="warnBox">⚠️ ${escHtml(fbErr(e))}<br>Vérifiez que les règles Firestore de la version 33 sont bien déployées.</div>`; }
+}
+function admTab(t){ ADM.tab=t; document.querySelectorAll('#admTabs button').forEach(b=>b.classList.toggle('active',b.dataset.t===t)); if(ADM.users) admRender(); }
+const admDate=t=>t?new Date(t).toLocaleDateString('fr-FR'):'—';
+const admAgo=t=>{ if(!t) return 'jamais'; const d=(Date.now()-t)/86400000; return d<1/24?'à l\'instant':d<1?`il y a ${Math.round(d*24)} h`:d<30?`il y a ${Math.round(d)} j`:admDate(t); };
+function admRender(){
+  const U=ADM.users||[], el=$v('admBody'), day=86400000, now=Date.now();
+  if(ADM.tab==='dash'){
+    const act7=U.filter(u=>u.lastSeen>now-7*day).length, new30=U.filter(u=>u.created>now-30*day).length;
+    const P=U.reduce((a,u)=>a+((u.counts||{}).p||0),0), F=U.reduce((a,u)=>a+((u.counts||{}).f||0),0);
+    const andr=U.filter(u=>u.platform==='android').length, susp=U.filter(u=>u.disabled).length;
+    const days=[...Array(30)].map((_,i)=>{ const d0=new Date(now-(29-i)*day); d0.setHours(0,0,0,0); const d1=+d0+day; return {d:d0,n:U.filter(u=>u.created>=+d0&&u.created<d1).length}; });
+    const mx=Math.max(1,...days.map(x=>x.n)), W=300, H=90, bw=W/30;
+    const bars=days.map((x,i)=>`<rect x="${(i*bw+1).toFixed(1)}" y="${(H-x.n/mx*(H-14)).toFixed(1)}" width="${(bw-2).toFixed(1)}" height="${(x.n/mx*(H-14)).toFixed(1)}" rx="2" fill="var(--accent)"><title>${x.d.toLocaleDateString('fr-FR')} : ${x.n}</title></rect>`).join('');
+    el.innerHTML=`<div class="admKpis">
+      <div><b>${U.length}</b><span>Utilisateurs</span></div><div><b>${act7}</b><span>Actifs 7 jours</span></div><div><b>${new30}</b><span>Nouveaux 30 jours</span></div>
+      <div><b>${P}</b><span>Relevés & plans</span></div><div><b>${F}</b><span>Favoris</span></div><div><b>${andr} / ${U.length-andr}</b><span>Android / Web</span></div>
+      <div><b>${susp}</b><span>Comptes suspendus</span></div></div>
+      <h3>Inscriptions — 30 derniers jours</h3>
+      <svg viewBox="0 0 ${W} ${H}" class="admChart" role="img" aria-label="Inscriptions par jour">${bars}<line x1="0" y1="${H-0.5}" x2="${W}" y2="${H-0.5}" stroke="var(--line)"/></svg>
+      <div class="admAxis"><span>${admDate(+days[0].d)}</span><span>aujourd'hui</span></div>
+      <h3>Derniers inscrits</h3>${[...U].sort((a,b)=>(b.created||0)-(a.created||0)).slice(0,5).map(u=>`<div class="stat"><span>${escHtml(u.name||'—')}</span><b>${admDate(u.created)}</b></div>`).join('')||'<p class="muted">Aucun utilisateur.</p>'}
+      <button class="btn ghost" onclick="admLoad()">🔄 Actualiser</button>`;
+  }
+  else if(ADM.tab==='users'){
+    const q=normTxt(ADM.q), L=U.filter(u=>!q||normTxt((u.name||'')+' '+(u.login||'')).includes(q)).sort((a,b)=>(b.lastSeen||b.created||0)-(a.lastSeen||a.created||0));
+    el.innerHTML=`<div class="row"><input id="admQ" placeholder="Rechercher un nom, un téléphone, un e-mail…" value="${escHtml(ADM.q)}" oninput="ADM.q=this.value;admRender();setTimeout(()=>{const i=$v('admQ');if(i){i.focus();i.setSelectionRange(i.value.length,i.value.length);}},0)"><button class="btn ghost" style="flex:0 0 auto;width:auto" onclick="admCsv()">⬇ Export CSV</button></div>
+      <p class="muted">${L.length} utilisateur(s) · les relevés et plans restent privés : seuls leurs nombres sont visibles ici.</p>
+      ${L.map(u=>`<div class="admUser${u.disabled?' off':''}"><div><b>${escHtml(u.name||'—')}</b> ${u.disabled?'<span class="pill off">Suspendu</span>':'<span class="pill on">Actif</span>'}<small>${escHtml(u.login||'')} · inscrit le ${admDate(u.created)} · vu ${admAgo(u.lastSeen)}</small><small>${u.platform==='android'?'📱 Android':'🌐 Web'}${u.ver&&u.ver!=='web'?' '+escHtml(String(u.ver)):''} · ${(u.counts||{}).p||0} relevé(s)/plan(s) · ${(u.counts||{}).f||0} favori(s)</small></div>
+        <button class="btn ${u.disabled?'secondary':'danger'}" onclick="admToggle('${u.uid}',${!u.disabled})">${u.disabled?'Réactiver':'Suspendre'}</button></div>`).join('')||'<p class="muted">Aucun résultat.</p>'}`;
+  }
+  else if(ADM.tab==='ann'){
+    const A=ADM.ann||{};
+    el.innerHTML=`<p class="muted">Message affiché en bandeau à tous les utilisateurs à l'ouverture de l'application (une fois par message).</p>
+      <label>Message</label><textarea id="admAnnText" rows="3" maxlength="240" placeholder="ex. : Nouvelle version disponible : boussole plus précise !">${escHtml(A.text||'')}</textarea>
+      <label>Type</label><select id="admAnnLevel"><option value="info"${A.level==='info'?' selected':''}>📢 Information</option><option value="succes"${A.level==='succes'?' selected':''}>🎉 Nouveauté</option><option value="alerte"${A.level==='alerte'?' selected':''}>⚠️ Alerte</option></select>
+      <label class="chk"><input type="checkbox" id="admAnnOn"${A.active?' checked':''}> Afficher ce message</label>
+      <button class="btn" onclick="admSaveAnn()">📢 Publier</button>
+      ${A.text?`<p class="muted">Dernière publication : ${admDate(A.id)} · ${A.active?'affiché':'masqué'}</p>`:''}`;
+  }
+  else {
+    const C=ADM.app||{};
+    el.innerHTML=`<label>Lien Google Play (quand l'application sera publiée)</label><input id="admPlay" value="${escHtml(C.playUrl||'')}" placeholder="https://play.google.com/store/apps/details?id=ci.luckytrans.geoplan">
+      <label>Lien de téléchargement direct de l'APK (en attendant)</label><input id="admApk" value="${escHtml(C.apkUrl||APP_CFG.apkUrl)}">
+      <p class="muted">Ces liens sont proposés aux personnes qui reçoivent un point partagé sans avoir l'application, et en cas de mise à jour obligatoire.</p>
+      <label>Version Android minimale (numéro de build, ex. 3 pour 1.0.3)</label><input id="admMin" type="number" min="0" value="${+C.minBuild||0}">
+      <p class="muted">Les téléphones avec un build plus ancien verront un écran « Mise à jour obligatoire ». 0 = désactivé.</p>
+      <label>Message de maintenance</label><input id="admMaint" value="${escHtml(C.maintenance||'')}" placeholder="ex. : Maintenance ce soir de 22 h à 23 h">
+      <label class="chk"><input type="checkbox" id="admMaintOn"${C.maintenanceOn?' checked':''}> Afficher le message de maintenance</label>
+      <button class="btn" onclick="admSaveApp()">💾 Enregistrer les réglages</button>`;
+  }
+}
+async function admToggle(uid,off){
+  const u=ADM.users.find(x=>x.uid===uid); if(!u) return;
+  if(!confirm(off?`Suspendre le compte de ${u.name||u.login} ? Il ne pourra plus synchroniser ses données.`:`Réactiver le compte de ${u.name||u.login} ?`)) return;
+  try{ const {db}=await fbLoad(); await db.collection('users').doc(uid).update({disabled:off,disabledAt:Date.now()}); u.disabled=off; admRender(); toast(off?'Compte suspendu':'Compte réactivé ✅'); }
+  catch(e){ toast('Action impossible : '+fbErr(e)); }
+}
+async function admSaveAnn(){
+  const A={text:$v('admAnnText').value.trim(),level:$v('admAnnLevel').value,active:$v('admAnnOn').checked,id:Date.now()};
+  try{ const {db}=await fbLoad(); await db.collection('config').doc('announce').set(A); ADM.ann=A; admRender(); toast('📢 Annonce publiée'); }catch(e){ toast('Publication impossible : '+fbErr(e)); }
+}
+async function admSaveApp(){
+  const C={playUrl:$v('admPlay').value.trim(),apkUrl:$v('admApk').value.trim(),minBuild:Math.max(0,parseInt($v('admMin').value)||0),maintenance:$v('admMaint').value.trim(),maintenanceOn:$v('admMaintOn').checked,upd:Date.now()};
+  if([C.playUrl,C.apkUrl].some(x=>x&&!/^https:\/\//.test(x))) return toast('Les liens doivent commencer par https://');
+  try{ const {db}=await fbLoad(); await db.collection('config').doc('app').set(C); ADM.app=C; Object.assign(APP_CFG,C); admRender(); toast('💾 Réglages enregistrés'); }catch(e){ toast('Enregistrement impossible : '+fbErr(e)); }
+}
+function admCsv(){
+  const esc=v=>`"${String(v==null?'':v).replace(/"/g,'""')}"`;
+  const rows=[['Nom','Identifiant','Inscription','Dernière activité','Plateforme','Version','Relevés/plans','Favoris','Statut'].map(esc).join(';')]
+    .concat(ADM.users.map(u=>[u.name,u.login,admDate(u.created),u.lastSeen?new Date(u.lastSeen).toLocaleString('fr-FR'):'',u.platform||'',u.ver||'',(u.counts||{}).p||0,(u.counts||{}).f||0,u.disabled?'Suspendu':'Actif'].map(esc).join(';')));
+  saveBlob(new Blob(['﻿'+rows.join('\n')],{type:'text/csv'}),`lucky-geoplan-utilisateurs-${new Date().toISOString().slice(0,10)}.csv`);
+}
+
+/* =====================================================================
    ☁️ SYNCHRONISATION EN LIGNE (Firebase : Authentication + Firestore)
    Les données restent d'abord sur le téléphone (hors ligne) ; elles sont
    copiées dans l'espace privé de l'utilisateur (users/{uid}/items) dès
@@ -5373,7 +5592,9 @@ async function cloudSync(pull){
   try{
     const {auth,db}=await fbLoad(), user=auth.currentUser;
     if(!user||user.uid!==lu.fb){ setCloud('reco','Reconnectez-vous (👤 → Se connecter) pour reprendre la synchronisation.'); return; }
-    const col=db.collection('users').doc(user.uid).collection('items'), mk=userKey('sync');
+    const pref=db.collection('users').doc(user.uid);
+    if(pull){ try{ const ps=await pref.get(); if(ps.exists&&ps.data().disabled){ accountSuspended(); return; } }catch(e){} }
+    const col=pref.collection('items'), mk=userKey('sync');
     let meta={}; try{ meta=JSON.parse(localStorage.getItem(mk))||{}; }catch(e){} meta.h=meta.h||{};
     const saveMeta=()=>{ if(currentUser&&currentUser.id===me) try{ localStorage.setItem(mk,JSON.stringify(meta)); }catch(e){} };
     const localMap=()=>{ const m={}; Object.entries(SYNC_KINDS).forEach(([k,K])=>K.load().forEach(it=>{ if(it&&it.id!=null) m[k+'_'+it.id]={k,it,j:JSON.stringify(it)}; })); return m; };
@@ -5409,6 +5630,7 @@ async function cloudSync(pull){
     Object.keys(meta.h).forEach(key=>{ if(!L[key]) jobs.push(()=>col.doc(key).set({k:key.split('_')[0],del:true,upd:Date.now()}).then(()=>{ delete meta.h[key]; sent++; })); });
     for(let i=0;i<jobs.length;i+=8){ await Promise.all(jobs.slice(i,i+8).map(f=>f())); saveMeta(); }
     meta.last=Date.now(); saveMeta(); setCloud('ok');
+    pref.set({lastSeen:Date.now(),platform:IS_NATIVE?'android':'web',ver:APP_VER,counts:{p:SYNC_KINDS.p.load().length,f:SYNC_KINDS.f.load().length}},{merge:true}).catch(()=>{});
     if(got){ onAuthChange(); if(document.getElementById('authModal').style.display!=='none'&&currentUser) renderAuth('account'); toast(`☁️ ${got} élément(s) récupéré(s) depuis votre compte en ligne`); }
   }catch(e){ console.warn('synchro',e); setCloud(e&&(e.code==='auth/network-request-failed'||e.code==='unavailable'||e.code==='sdk/unavailable')?'attente':'erreur',fbErr(e)); }
   finally{ syncBusy=false; if(syncAgain){ syncAgain=false; cloudSoon(800); } }
@@ -5447,6 +5669,8 @@ function cloudBoot(){
     if(user&&currentUser&&user.uid===lu.fb) cloudSync(true); else setCloud('reco','Reconnectez-vous (👤 → Se connecter) pour reprendre la synchronisation.'); }); })
     .catch(e=>setCloud('attente',fbErr(e)));
 }
+var APP_VER='web';
+function accountSuspended(){ setCloud('erreur','Compte suspendu'); alert('Votre compte a été suspendu par l\'administrateur de '+APP_NAME+'. Vos données restent sur ce téléphone, mais la sauvegarde en ligne est bloquée. Contactez le support.'); logout(); }
 function cloudNow(){ if(!currentUser) return; const lu=accDB().users[currentUser.id]; if(lu&&lu.fb) cloudSync(true); else toast('Déconnectez-vous puis reconnectez-vous avec Internet pour activer la sauvegarde en ligne.'); }
 // Chaque enregistrement local déclenche l'envoi en ligne (regroupé)
 { const _sp=saveProjects; saveProjects=function(l){ const r=_sp(l); if(r!==false) cloudSoon(); return r; };
@@ -5488,6 +5712,12 @@ if(IS_NATIVE){
   if(P.TextToSpeech){
     speak=function(t){ if(!voiceOn) return; P.TextToSpeech.stop().catch(()=>{}).then(()=>P.TextToSpeech.speak({text:String(t),lang:'fr-FR',rate:1,pitch:1,volume:1,category:'playback'})).catch(()=>{}); };
     const _tv=toggleVoice; toggleVoice=function(){ _tv(); if(!voiceOn) P.TextToSpeech.stop().catch(()=>{}); };
+  }
+  // Liens « luckygeo-pro.web.app/p?c=lat,lon » ouverts dans l'application
+  if(P.App){
+    P.App.addListener('appUrlOpen',ev=>{ const pt=parsePointUrl(ev&&ev.url); if(pt) openSharedPoint(pt); });
+    P.App.getLaunchUrl().then(r=>{ const pt=r&&parsePointUrl(r.url); if(pt) setTimeout(()=>openSharedPoint(pt),900); }).catch(()=>{});
+    P.App.getInfo().then(i=>{ APP_VER=i.version+' ('+i.build+')'; }).catch(()=>{});
   }
   // Bouton retour d'Android : ferme la fenêtre ouverte, sinon revient à la carte, sinon met l'appli en arrière-plan
   if(P.App) P.App.addListener('backButton',()=>{
